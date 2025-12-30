@@ -24,5 +24,4 @@ This entire project was designed and coded using Google Gemini.
  * Download or clone this repository.
  * Open the index.html file in any web browser (Chrome, Edge, Safari, etc.).
  * Enjoy! No installation or build process is required.
-
 Disclaimer: This is a fan-made project created for educational purposes and is not affiliated with Netflix.
