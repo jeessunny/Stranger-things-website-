@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stranger Things | Welcome to Hawkins</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Importing a font similar to ITC Benguiat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --stranger-red: #E71D36;
+            --stranger-dark-red: #8a0b0b;
+            --neon-glow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000;
+        }
+
+        body {
+            background-color: #000000;
+            color: #E71D36; /* Default text color is now Red */
+            font-family: 'Courier Prime', monospace; /* 80s Terminal vibe */
+            overflow-x: hidden;
+        }
+
+        /* The Title Font Styling */
+        .stranger-font {
+            font-family: 'Libre Baskerville', serif;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            /* The iconic outline and glow */
+            -webkit-text-stroke: 1px #E71D36; /* Fallback */
+            color: transparent;
+            -webkit-text-stroke: 2px #E71D36;
+            text-shadow: 0 0 15px rgba(231, 29, 54, 0.6);
+            position: relative;
+        }
+        
+        /* Neon flicker animation */
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                0 0 4px #fff,
+                0 0 11px #fff,
+                0 0 19px #fff,
+                0 0 40px #f00,
+                0 0 80px #f00,
+                0 0 90px #f00,
+                0 0 100px #f00,
+                0 0 150px #f00;
+            }
+            20%, 24%, 55% {       
+                text-shadow: none;
+            }
+        }
+
+        .neon-text {
+            color: #ff0000;
+            animation: flicker 4s infinite alternate;     
+        }
+
+        /* Intro Zoom Effect */
+        .title-zoom-container {
+            transition: transform 3s ease-out, opacity 2s ease-out;
+        }
+        
+        /* Upside Down Particles Canvas */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background: radial-gradient(circle at center, #1a0b0b 0%, #000000 100%);
+            transition: background 2s ease;
+        }
+
+        .upside-down-mode #canvas-container {
+            background: radial-gradient(circle at center, #2a0a0a 0%, #000000 100%); /* Darker Red/Black for Upside Down now */
+        }
+
+        /* Villain Sections */
+        .villain-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #333;
+        }
+        
+        .villain-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(138,11,11,0.2) 0%, rgba(0,0,0,0) 70%);
+            height: 100%;
+        }
+
+        /* Christmas Lights Wall */
+        .wall-letter {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 2.5rem;
+            position: relative;
+            text-align: center;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 10px;
+        }
+        .bulb {
+            width: 20px;
+            height: 30px;
+            border-radius: 50%;
+            background: #222; /* Darker off state */
+            position: absolute;
+            top: 5px;
+            transition: background 0.1s, box-shadow 0.1s;
+        }
+        .bulb::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            background: #111;
+        }
+        .wire {
+            position: absolute;
+            top: 15px;
+            left: -50%;
+            width: 200%;
+            height: 20px;
+            border-top: 2px solid #2d241b; /* Dark Brown wire for the wall */
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8a0b0b;
+        }
+
+        .text-stranger-red {
+            color: #E71D36;
+        }
+        .text-stranger-dark {
+            color: #8a0b0b;
+        }
+        
+        /* Retro Wallpaper Pattern - DIMMED */
+        .retro-wallpaper-bg {
+            background-color: #5d4e40; /* Much Darker Brown/Beige */
+            background-image: 
+                radial-gradient(circle at 50% 50%, #4a3b30 2px, transparent 2.5px),
+                radial-gradient(circle at 25% 25%, #3e2d23 2px, transparent 2.5px),
+                radial-gradient(circle at 75% 75%, #3e2d23 2px, transparent 2.5px);
+            background-size: 40px 40px;
+            position: relative;
+        }
+        
+        /* Heavy Vignette Overlay to darken it further */
+        .retro-wallpaper-bg::after {
+             content: "";
+             position: absolute;
+             top: 0; left: 0; right: 0; bottom: 0;
+             background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 90%);
+             pointer-events: none;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Canvas Background -->
+    <div id="canvas-container">
+        <canvas id="spores"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/90 backdrop-blur-md border-b border-red-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="stranger-font text-2xl tracking-widest text-red-600" style="-webkit-text-stroke: 0.5px #E71D36; color: #E71D36;">STRANGER</span>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="#hero" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">Home</a>
+                        <a href="#mindflayer" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">Mind Flayer</a>
+                        <a href="#vecna" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">Vecna</a>
+                        <a href="#demogorgon" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">Demogorgon</a>
+                        <a href="#demodog" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">Demodog</a>
+                        <a href="#wall" class="text-red-700 hover:text-red-500 px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors">The Wall</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex lg:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-red-700 hover:text-red-500 hover:bg-black focus:outline-none transition-colors">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div class="lg:hidden hidden bg-black border-b border-red-900 absolute w-full" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#hero" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#mindflayer" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">Mind Flayer</a>
+                <a href="#vecna" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">Vecna</a>
+                <a href="#demogorgon" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">Demogorgon</a>
+                <a href="#demodog" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">Demodog</a>
+                <a href="#wall" onclick="toggleMobileMenu()" class="text-red-700 hover:text-red-500 block px-3 py-2 rounded-md text-base font-medium">The Wall</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden pt-20">
+        <div class="text-center z-10 title-zoom-container px-4">
+            <div class="mb-8">
+                <h1 class="stranger-font text-5xl md:text-8xl lg:text-9xl tracking-tighter mb-2 leading-none">
+                    STRANGER
+                </h1>
+                <div class="w-full h-1 bg-red-600 shadow-[0_0_10px_#ff0000] my-2"></div>
+                <h1 class="stranger-font text-5xl md:text-8xl lg:text-9xl tracking-tighter mt-2 leading-none">
+                    THINGS
+                </h1>
+            </div>
+            
+            <p class="mt-8 max-w-2xl mx-auto text-xl text-red-700 font-light tracking-widest uppercase">
+                Welcome to Hawkins, Indiana. <span class="text-red-500 font-bold">Don't go out at night.</span>
+            </p>
+
+            <div class="mt-12 flex justify-center space-x-6">
+                <button onclick="document.getElementById('mindflayer').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 border border-red-600 text-red-600 hover:bg-red-600 hover:text-black transition-all duration-300 uppercase tracking-widest text-sm font-bold shadow-[0_0_10px_rgba(220,38,38,0.3)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
+                    Explore The Hive
+                </button>
+            </div>
+        </div>
+        <!-- Fog overlay -->
+        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none"></div>
+    </section>
+    <!-- SECTION 1: MIND FLAYER -->
+    <section id="mindflayer" class="villain-section bg-black border-t border-red-900/30">
+        <div class="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2 order-2 md:order-1">
+                <h2 class="text-4xl md:text-6xl font-bold text-red-600 mb-6 uppercase tracking-widest stranger-font" style="text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); -webkit-text-stroke: 0px;">The Mind Flayer</h2>
+                <div class="h-1 w-24 bg-red-800 mb-8"></div>
+                <p class="text-red-800 text-lg leading-relaxed mb-6 font-mono">
+                    The supreme ruler of the Upside Down. A gigantic, spider-like entity composed of silver storms and shadow particles. It controls the Hive Mind, possessing hosts to spread its influence into our dimension.
+                </p>
+                <div class="flex items-center text-red-500 font-bold tracking-wider">
+                    <i class="fas fa-spider mr-3 text-2xl"></i>
+                    <span>THREAT LEVEL: EXTREME</span>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-[500px] order-1 md:order-2 rounded-lg overflow-hidden border border-red-900 shadow-[0_0_20px_rgba(153,27,27,0.2)] villain-icon-container">
+                <i class="fas fa-spider text-9xl text-red-900 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: VECNA -->
+    <section id="vecna" class="villain-section bg-black border-t border-red-900/30">
+        <div class="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2 h-[500px] rounded-lg overflow-hidden border border-red-900 shadow-[0_0_20px_rgba(153,27,27,0.2)] villain-icon-container">
+                <i class="far fa-clock text-9xl text-red-900 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"></i>
+            </div>
+            <div class="w-full md:w-1/2">
+                <h2 class="text-4xl md:text-6xl font-bold text-red-600 mb-6 uppercase tracking-widest stranger-font" style="text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); -webkit-text-stroke: 0px;">Vecna</h2>
+                <div class="h-1 w-24 bg-red-800 mb-8"></div>
+                <p class="text-red-800 text-lg leading-relaxed mb-6 font-mono">
+                    Formerly Henry Creel (001). The "Five-Star General" of the Mind Flayer. Vecna preys on the trauma of teenagers in Hawkins, killing them in a ritualistic manner to open gates between worlds. "It's time."
+                </p>
+                <div class="flex items-center text-red-500 font-bold tracking-wider">
+                    <i class="far fa-clock mr-3 text-2xl animate-pulse"></i>
+                    <span>TARGETING: HAWKINS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: DEMOGORGON -->
+    <section id="demogorgon" class="villain-section bg-black border-t border-red-900/30">
+        <div class="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2 order-2 md:order-1">
+                <h2 class="text-4xl md:text-6xl font-bold text-red-600 mb-6 uppercase tracking-widest stranger-font" style="text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); -webkit-text-stroke: 0px;">Demogorgon</h2>
+                <div class="h-1 w-24 bg-red-800 mb-8"></div>
+                <p class="text-red-800 text-lg leading-relaxed mb-6 font-mono">
+                    The soldier. A predatory humanoid creature with a flower-like face lined with needle-sharp teeth. It hunts by blood scent and can tear through the fabric of reality. Tough, fast, and relentless.
+                </p>
+                <div class="flex items-center text-red-500 font-bold tracking-wider">
+                    <i class="fas fa-biohazard mr-3 text-2xl"></i>
+                    <span>STATUS: DANGEROUS</span>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-[500px] order-1 md:order-2 rounded-lg overflow-hidden border border-red-900 shadow-[0_0_20px_rgba(153,27,27,0.2)] villain-icon-container">
+                <i class="fas fa-skull-crossbones text-9xl text-red-900 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"></i>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 4: DEMODOG -->
+    <section id="demodog" class="villain-section bg-black border-t border-red-900/30">
+        <div class="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2 h-[500px] rounded-lg overflow-hidden border border-red-900 shadow-[0_0_20px_rgba(153,27,27,0.2)] villain-icon-container">
+                 <i class="fas fa-paw text-9xl text-red-900 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"></i>
+            </div>
+            <div class="w-full md:w-1/2">
+                <h2 class="text-4xl md:text-6xl font-bold text-red-600 mb-6 uppercase tracking-widest stranger-font" style="text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); -webkit-text-stroke: 0px;">Demodog</h2>
+                <div class="h-1 w-24 bg-red-800 mb-8"></div>
+                <p class="text-red-800 text-lg leading-relaxed mb-6 font-mono">
+                    An adolescent stage of the Demogorgon. While smaller, they hunt in packs and share a hive mind connection. Fast, agile, and fiercely loyal to the Mind Flayer. "It's a trap."
+                </p>
+                <div class="flex items-center text-red-500 font-bold tracking-wider">
+                    <i class="fas fa-paw mr-3 text-2xl animate-pulse"></i>
+                    <span>STATUS: PACK HUNTERS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- The Alphabet Wall (Wallpaper Theme - Darker) -->
+    <section id="wall" class="py-20 relative overflow-hidden retro-wallpaper-bg" style="border-top: 20px solid #2d241b; border-bottom: 20px solid #2d241b;">
+        
+        <div class="relative max-w-6xl mx-auto px-4 z-10">
+            <h2 class="text-center text-3xl mb-12 font-serif text-gray-300 bg-black/60 inline-block px-6 py-2 mx-auto rounded border border-gray-700 shadow-lg">Joyce's Living Room</h2>
+            
+            <div class="flex flex-wrap justify-center gap-4 md:gap-8 select-none" id="alphabet-container">
+                <!-- Letters will be injected by JS -->
+            </div>
+
+            <div class="mt-12 text-center">
+                <input type="text" id="message-input" placeholder="TYPE MESSAGE HERE" maxlength="15" 
+                    class="bg-black/40 border-b-4 border-black text-gray-200 placeholder-gray-400 text-center text-2xl font-mono uppercase focus:outline-none focus:border-red-900 w-full max-w-md p-2 rounded shadow-lg backdrop-blur-sm">
+                <br>
+                <button onclick="playMessage()" class="mt-6 px-8 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded shadow-lg border-2 border-gray-700 transition-colors">
+                    TRANSMIT
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-red-900 py-12 text-center">
+        <div class="flex justify-center space-x-6 mb-8 text-red-900">
+            <i class="fab fa-twitter hover:text-red-500 cursor-pointer text-2xl transition-colors"></i>
+            <i class="fab fa-instagram hover:text-red-500 cursor-pointer text-2xl transition-colors"></i>
+            <i class="fab fa-facebook hover:text-red-500 cursor-pointer text-2xl transition-colors"></i>
+        </div>
+        <p class="text-red-900 font-mono text-sm">
+            HAWKINS NATIONAL LABORATORY &copy; 1983<br>
+            RESTRICTED AREA. NO TRESPASSING.
+        </p>
+    </footer>
+    <script>
+        // --- Mobile Menu Logic ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // --- Spores Animation Setup ---
+        const canvas = document.getElementById('spores');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let isUpsideDown = false; // Kept false as default, toggle logic removed
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 3 + 1;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = '200, 200, 200'; // Default Ash color
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wrap around screen
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+
+                // Jitter
+                this.x += (Math.random() - 0.5) * 0.2;
+                this.y += (Math.random() - 0.5) * 0.2;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                
+                ctx.shadowBlur = 0;
+                
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = width < 768 ? 50 : 150;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+
+
+        // --- The Alphabet Wall Logic ---
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const container = document.getElementById('alphabet-container');
+        const letterElements = {};
+
+        // Bulb colors: Red, Blue, Yellow, Green cycle
+        const colors = ['#ff0000', '#00ffff', '#ffff00', '#00ff00'];
+
+        alphabet.split('').forEach((char, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = "wall-letter w-12 md:w-16";
+            
+            const bulbColor = colors[index % colors.length];
+            
+            // Wire
+            const wire = document.createElement('div');
+            wire.className = 'wire';
+            
+            // Bulb
+            const bulb = document.createElement('div');
+            bulb.className = 'bulb';
+            bulb.style.backgroundColor = '#222'; // Off state
+            bulb.dataset.color = bulbColor;
+            
+            // Letter - Paint color is black
+            const span = document.createElement('span');
+            span.innerText = char;
+            span.className = "mt-2 text-black font-bold text-2xl font-serif opacity-80"; 
+            
+            wrapper.appendChild(wire);
+            wrapper.appendChild(bulb);
+            wrapper.appendChild(span);
+            container.appendChild(wrapper);
+
+            letterElements[char] = bulb;
+        });
+
+        function lightUp(char, duration = 800) {
+            const bulb = letterElements[char.toUpperCase()];
+            if (bulb) {
+                const color = bulb.dataset.color;
+                bulb.style.backgroundColor = color;
+                bulb.style.boxShadow = `0 0 20px ${color}, 0 0 40px ${color}`;
+                
+                setTimeout(() => {
+                    bulb.style.backgroundColor = '#222';
+                    bulb.style.boxShadow = 'none';
+                }, duration);
+            }
+        }
+
+        async function playMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+            
+            if (!message) return;
+            
+            input.disabled = true;
+
+            for (let i = 0; i < message.length; i++) {
+                lightUp(message[i]);
+                await new Promise(r => setTimeout(r, 1000)); // Wait between letters
+            }
+            
+            input.disabled = false;
+            input.value = '';
+            input.focus();
+        }
+
+        // Easter Egg: Run RUN automatically on load after delay
+        setTimeout(async () => {
+             const obs = new IntersectionObserver((entries) => {
+                 if(entries[0].isIntersecting) {
+                     // small easter egg sequence
+                     lightUp('R', 500);
+                     setTimeout(() => lightUp('U', 500), 600);
+                     setTimeout(() => lightUp('N', 500), 1200);
+                     obs.disconnect();
+                 }
+             });
+             obs.observe(document.getElementById('wall'));
+        }, 1000);
+
+    </script>
+</body>
+</html>
+
+
+  
+  
+  
+  
